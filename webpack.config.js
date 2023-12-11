@@ -44,7 +44,9 @@ module.exports = (_, argv) => ({
       name: "login_form",
       filename: "remoteEntry.js",
       remotes: {},
-      exposes: {},
+      exposes: {
+        "./LoginForm": "./src/components/LoginForm",
+      },
       shared: {
         ...deps,
         react: {
