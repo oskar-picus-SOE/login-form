@@ -1,8 +1,15 @@
 import {Alert, Box, Button, Snackbar, TextField, Typography} from "@mui/material";
 import {useState} from "react";
+import {login} from "../userService";
+import {useNavigate} from "react-router-dom";
 
 export const LoginForm = () => {
     const [open, setOpen] = useState(false);
+    const navigate = useNavigate();
+    const [loginData, setLoginData] = useState({
+        username: '',
+        password: ''
+    })
 
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {
@@ -12,8 +19,13 @@ export const LoginForm = () => {
         setOpen(false);
     };
 
-    const handleSubmit = () => {
-        // todo handle submit
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        login(loginData)
+            .then(response => response.data)
+            .then(jwt => window.localStorage.setItem("jwt", jwt.jwt))
+            .then(() => navigate('/posts'))
+            .catch(e => console.log(e));
     };
 
     return (
@@ -33,16 +45,17 @@ export const LoginForm = () => {
             <Typography component="h1" variant="h5">
                 Login
             </Typography>
-            <Box noValidate sx={{ mt: 1 }}>
+            <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
                 <TextField
                     margin="normal"
                     required
                     fullWidth
-                    id="email"
-                    label="Email Address"
-                    name="email"
-                    autoComplete="email"
+                    id="username"
+                    label="Username"
+                    name="username"
+                    autoComplete="username"
                     autoFocus
+                    onChange={(e) => setLoginData((prev) => ({...prev, username: e.target.value}))}
                 />
                 <TextField
                     margin="normal"
@@ -53,12 +66,13 @@ export const LoginForm = () => {
                     type="password"
                     id="password"
                     autoComplete="current-password"
+                    onChange={(e) => setLoginData((prev) => ({...prev, password: e.target.value}))}
                 />
                 <Button
+                    type={"submit"}
                     fullWidth
                     variant="contained"
                     sx={{ mt: 3, mb: 2 }}
-                    onClick={handleSubmit}
                 >
                     Login
                 </Button>
