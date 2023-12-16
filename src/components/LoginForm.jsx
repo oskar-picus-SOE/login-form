@@ -25,7 +25,7 @@ export const LoginForm = () => {
             .then(response => response.data)
             .then(jwt => window.localStorage.setItem("jwt", jwt.jwt))
             .then(() => navigate('/posts'))
-            .catch(e => console.log(e));
+            .catch(e => setOpen(true));
     };
 
     return (
